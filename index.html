@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090b18">
+    <meta name="description" content="Neon Run: escapa del perseguidor, supera mundos y corre sin fin en un arcade neón.">
+    <title>Neon Run — Escapa de la sombra</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="intro">
+        <p class="eyebrow">PROTOCOLO DE ESCAPE // 01</p>
+        <h1>NEON <span>RUN</span></h1>
+        <p class="subtitle">Corre. Salta. No dejes que te alcance.</p>
+      </header>
+
+      <div class="game-toolbar" aria-label="Opciones del juego">
+        <p class="best-score" id="best-score">RÉCORD: 0 PTS</p>
+        <div class="toolbar-actions">
+          <button class="utility-button" id="instructions-button" type="button">CÓMO JUGAR</button>
+          <button class="utility-button" id="audio-button" type="button" aria-pressed="true">SONIDO: SÍ</button>
+          <button class="utility-button" id="vibration-button" type="button" aria-pressed="true">VIBRACIÓN: SÍ</button>
+          <button class="utility-button" id="pause-button" type="button" disabled>PAUSAR</button>
+        </div>
+      </div>
+
+      <section class="level-menu" id="level-menu" aria-labelledby="level-menu-title">
+        <div class="level-menu-heading">
+          <p class="eyebrow">ELIGE TU PRÓXIMO MUNDO</p>
+          <h2 id="level-menu-title">NIVELES</h2>
+        </div>
+        <div class="level-grid">
+          <button class="level-card is-selected" type="button" data-level="1">
+            <span class="level-number">01</span>
+            <strong>CIUDAD NEÓN</strong>
+            <span class="world-preview city-preview" aria-hidden="true"></span>
+            <small>Reúne 20 monedas</small>
+            <span class="level-lock">DISPONIBLE</span>
+          </button>
+          <button class="level-card" type="button" data-level="2">
+            <span class="level-number">02</span>
+            <strong>VACÍO VIOLETA</strong>
+            <span class="world-preview void-preview" aria-hidden="true"></span>
+            <small>Esquiva 15 peligros</small>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="3">
+            <span class="level-number">03</span>
+            <strong>TORMENTA SOLAR</strong>
+            <span class="world-preview solar-preview" aria-hidden="true"></span>
+            <small>Recoge 5 poderes</small>
+            <span class="level-feature">JEFE FINAL</span>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="4">
+            <span class="level-number">04</span>
+            <strong>MUNDO ACUÁTICO</strong>
+            <span class="world-preview aquatic-preview" aria-hidden="true"></span>
+            <small>Recorre 600 m</small>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="5">
+            <span class="level-number">05</span>
+            <strong>BOSQUE CRISTALINO</strong>
+            <span class="world-preview forest-preview" aria-hidden="true"></span>
+            <small>Reúne 35 monedas</small>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="6">
+            <span class="level-number">06</span>
+            <strong>CIUDAD MECÁNICA</strong>
+            <span class="world-preview machine-preview" aria-hidden="true"></span>
+            <small>Esquiva 22 peligros</small>
+            <span class="level-feature">JEFE FINAL</span>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="7">
+            <span class="level-number">07</span>
+            <strong>REINO GLACIAR</strong>
+            <span class="world-preview ice-preview" aria-hidden="true"></span>
+            <small>Recoge 10 poderes</small>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="8">
+            <span class="level-number">08</span>
+            <strong>DESIERTO CARMESÍ</strong>
+            <span class="world-preview desert-preview" aria-hidden="true"></span>
+            <small>Recorre 900 m</small>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+          <button class="level-card" type="button" data-level="9">
+            <span class="level-number">09</span>
+            <strong>NÚCLEO CÓSMICO</strong>
+            <span class="world-preview cosmic-preview" aria-hidden="true"></span>
+            <small>Reúne 60 monedas</small>
+            <span class="level-feature">JEFE FINAL</span>
+            <span class="level-lock">BLOQUEADO</span>
+          </button>
+        </div>
+        <p class="progress-status" id="progress-status" aria-live="polite">Completa el objetivo para desbloquear el siguiente mundo.</p>
+        <button class="action-button level-start-button" id="start-level-button" type="button">JUGAR NIVEL 1</button>
+        <button class="infinite-mode-button" id="infinite-mode-button" type="button">CARRERA INFINITA</button>
+        <p class="infinite-mode-note">Sobrevive cuanto puedas: los mundos cambian y el perseguidor ataca con rabia.</p>
+
+        <section class="accessibility-section" aria-labelledby="accessibility-title">
+          <h3 id="accessibility-title">ACCESIBILIDAD Y CONTROLES</h3>
+          <p>Reduce los efectos visuales o asigna teclas más cómodas.</p>
+          <div class="accessibility-actions">
+            <button class="utility-button" id="reduced-effects-button" type="button" aria-pressed="false">REDUCIR DESTELLOS: NO</button>
+            <button class="utility-button" id="controls-settings-button" type="button">CONFIGURAR TECLAS</button>
+          </div>
+        </section>
+
+        <section class="shop-section" aria-labelledby="shop-title">
+          <div class="shop-heading">
+            <h3 id="shop-title">TALLER DE MEJORAS</h3>
+            <p class="wallet-balance" id="wallet-balance" aria-label="Monedas disponibles">0 MONEDAS</p>
+          </div>
+          <p class="shop-description">Gasta las monedas que recojas para conseguir ventajas permanentes.</p>
+          <div class="shop-grid">
+            <article class="upgrade-card" data-upgrade="startShield">
+              <span class="upgrade-icon shield-icon" aria-hidden="true">S</span>
+              <strong>ESCUDO INICIAL</strong>
+              <small>Empieza cada carrera con 8 s de escudo.</small>
+              <button class="upgrade-buy" type="button" data-buy-upgrade="startShield">COMPRAR · 80</button>
+            </article>
+            <article class="upgrade-card" data-upgrade="startMagnet">
+              <span class="upgrade-icon magnet-icon" aria-hidden="true">M</span>
+              <strong>IMÁN INICIAL</strong>
+              <small>Atrae monedas durante 8 s al empezar.</small>
+              <button class="upgrade-buy" type="button" data-buy-upgrade="startMagnet">COMPRAR · 100</button>
+            </article>
+            <article class="upgrade-card" data-upgrade="extraLife">
+              <span class="upgrade-icon life-icon" aria-hidden="true">♥</span>
+              <strong>VIDA EXTRA</strong>
+              <small>Empieza todas las carreras con 4 vidas.</small>
+              <button class="upgrade-buy" type="button" data-buy-upgrade="extraLife">COMPRAR · 150</button>
+            </article>
+          </div>
+          <h4 class="cosmetic-title">ASPECTOS DE CORREDOR</h4>
+          <div class="cosmetic-grid">
+            <article class="cosmetic-card" data-skin="prism">
+              <span class="skin-swatch prism-swatch" aria-hidden="true"></span>
+              <strong>PRISMA</strong>
+              <small>Brillo violeta permanente.</small>
+              <button class="cosmetic-select" type="button" data-select-skin="prism">COMPRAR · 60</button>
+            </article>
+            <article class="cosmetic-card" data-skin="solar">
+              <span class="skin-swatch solar-swatch" aria-hidden="true"></span>
+              <strong>SOLAR</strong>
+              <small>Resplandor dorado.</small>
+              <button class="cosmetic-select" type="button" data-select-skin="solar">COMPRAR · 90</button>
+            </article>
+            <article class="cosmetic-card" data-skin="specter">
+              <span class="skin-swatch specter-swatch" aria-hidden="true"></span>
+              <strong>ESPECTRO</strong>
+              <small>Resplandor espectral.</small>
+              <button class="cosmetic-select" type="button" data-select-skin="specter">COMPRAR · 120</button>
+            </article>
+          </div>
+          <p class="shop-status" id="shop-status" aria-live="polite">Cada mejora se compra una sola vez.</p>
+        </section>
+
+        <section class="achievement-section" aria-labelledby="achievement-title">
+          <div class="achievement-heading">
+            <h3 id="achievement-title">RETOS Y LOGROS</h3>
+            <p>Consigue monedas extra al completar metas opcionales.</p>
+          </div>
+          <div class="achievement-grid">
+            <article class="achievement-card" data-achievement="firstLevel">
+              <strong>DOMINADOR DE NIVELES</strong>
+              <small>Completa 9 niveles (puedes repetirlos).</small>
+              <span class="achievement-progress">0/9</span>
+            </article>
+            <article class="achievement-card" data-achievement="coinCollector">
+              <strong>TESORO NEÓN</strong>
+              <small>Recoge 250 monedas en total.</small>
+              <span class="achievement-progress">0/250</span>
+            </article>
+            <article class="achievement-card" data-achievement="longRunner">
+              <strong>MARATÓN NEÓN</strong>
+              <small>Corre 10.000 m en total.</small>
+              <span class="achievement-progress">0/10000</span>
+            </article>
+            <article class="achievement-card" data-achievement="bossBreaker">
+              <strong>CAZADOR DE JEFES</strong>
+              <small>Derrota 5 jefes (puedes repetirlos).</small>
+              <span class="achievement-progress">0/5</span>
+            </article>
+            <article class="achievement-card" data-achievement="flawless">
+              <strong>INTACTO</strong>
+              <small>Completa 3 niveles sin recibir golpes.</small>
+              <span class="achievement-progress">0/3</span>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="game-shell" aria-label="Juego Neon Run">
+        <div class="game-frame">
+          <canvas id="game" width="960" height="540" aria-label="Partida de Neon Run"></canvas>
+          <div class="game-message is-hidden" id="game-message" role="status" aria-live="polite" aria-atomic="true">
+            <p class="message-kicker" id="message-kicker"></p>
+            <h2 id="message-title"></h2>
+            <p id="message-copy"></p>
+            <div class="message-actions">
+              <button class="action-button" id="action-button" type="button"></button>
+              <button class="secondary-button" id="secondary-action" type="button" hidden>MENÚ DE NIVELES</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <dialog class="help-dialog" id="help-dialog" aria-labelledby="help-title">
+        <p class="eyebrow">GUÍA DE SUPERVIVENCIA</p>
+        <h2 id="help-title">CÓMO JUGAR</h2>
+        <ul>
+          <li><kbd>←</kbd> <kbd>→</kbd> o <kbd>A</kbd> <kbd>D</kbd> cambia de carril.</li>
+          <li><kbd>ESPACIO</kbd>, <kbd>↑</kbd> o <kbd>W</kbd> salta cajas.</li>
+          <li><kbd>↓</kbd> o <kbd>S</kbd> deslízate bajo rayos.</li>
+          <li>Recoge poderes: <strong>S</strong> escudo, <strong>M</strong> imán y <strong>T</strong> turbo x2.</li>
+          <li>Guarda las monedas y cámbialas por mejoras permanentes en el taller.</li>
+          <li>El perseguidor entra en rabia cada cierto tiempo y lanza una ráfaga; mira el contador y cambia de carril.</li>
+          <li>Cada mundo tiene un evento especial anunciado antes de activarse. Los niveles 3, 6 y 9 terminan con un jefe: esquiva sus tres ataques.</li>
+          <li>Completa objetivos para subir de nivel y abrir portales dimensionales.</li>
+          <li>Usa Accesibilidad y controles en el menú para reducir destellos o reasignar teclas.</li>
+          <li>Completa retos opcionales para conseguir monedas y compra aspectos cosméticos del corredor.</li>
+          <li>En la carrera infinita no hay objetivo final; sobrevive y esquiva las ráfagas de rabia.</li>
+          <li>Activa o desactiva el sonido y la vibración desde las opciones.</li>
+          <li><kbd>ESC</kbd> pausa o reanuda la partida.</li>
+        </ul>
+        <button class="action-button" id="close-help" type="button">VOLVER</button>
+      </dialog>
+
+      <dialog class="help-dialog controls-dialog" id="controls-dialog" aria-labelledby="controls-title">
+        <p class="eyebrow">AJUSTES DE JUEGO</p>
+        <h2 id="controls-title">CONFIGURAR TECLAS</h2>
+        <p class="binding-instructions">Selecciona una acción y pulsa la tecla nueva. Las flechas, WASD y espacio siguen disponibles.</p>
+        <div class="binding-list">
+          <button class="utility-button" type="button" data-bind-action="left" data-label="CARRIL IZQUIERDO">CARRIL IZQUIERDO · POR DEFECTO</button>
+          <button class="utility-button" type="button" data-bind-action="right" data-label="CARRIL DERECHO">CARRIL DERECHO · POR DEFECTO</button>
+          <button class="utility-button" type="button" data-bind-action="jump" data-label="SALTAR">SALTAR · POR DEFECTO</button>
+          <button class="utility-button" type="button" data-bind-action="slide" data-label="DESLIZAR">DESLIZAR · POR DEFECTO</button>
+        </div>
+        <button class="secondary-button binding-reset" id="reset-controls" type="button">RESTABLECER TECLAS</button>
+        <p class="binding-status" id="binding-status" aria-live="polite">Los cambios se guardan en este navegador.</p>
+        <button class="action-button" id="close-controls" type="button">VOLVER</button>
+      </dialog>
+
+      <nav class="touch-controls is-hidden" aria-label="Controles táctiles">
+        <button class="touch-button" type="button" data-action="left" aria-label="Carril izquierdo">◀</button>
+        <button class="touch-button" type="button" data-action="jump">SALTAR</button>
+        <button class="touch-button" type="button" data-action="slide">DESLIZAR</button>
+        <button class="touch-button" type="button" data-action="right" aria-label="Carril derecho">▶</button>
+      </nav>
+
+      <footer class="controls">
+        <p><kbd>←</kbd> <kbd>→</kbd> carril <span class="control-divider">/</span> <kbd>ESPACIO</kbd> saltar <span class="control-divider">/</span> <kbd>↓</kbd> deslizar</p>
+      </footer>
+    </main>
+  </body>
+</html>
